@@ -1,27 +1,19 @@
-import { DashboardHeader } from "@/components/dashboard-header"
-import { SensorOverview } from "@/components/sensor-overview"
-import { SensorCharts } from "@/components/sensor-charts"
-import { PumpControls } from "@/components/pump-controls"
-import { SystemStatus } from "@/components/system-status"
+"use client"
 
-export default function AgriculturalDashboard() {
-  return (
-    <div className="min-h-screen bg-background">
-      <DashboardHeader />
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
-      <main className="container mx-auto px-6 py-8 space-y-8">
-        {/* System Status Overview */}
-        <SystemStatus />
+export default function Home() {
+  const router = useRouter()
 
-        {/* Sensor Overview Cards */}
-        <SensorOverview />
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated")
+    if (isAuthenticated) {
+      router.push("/dashboard")
+    } else {
+      router.push("/login")
+    }
+  }, [router])
 
-        {/* Charts Section */}
-        <SensorCharts />
-
-        {/* Pump Controls */}
-        <PumpControls />
-      </main>
-    </div>
-  )
+  return null
 }

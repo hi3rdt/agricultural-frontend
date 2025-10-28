@@ -89,3 +89,24 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+:root {
+  /* ... các biến màu khác của bạn ... */
+
+  /* Thêm các biến màu cho biểu đồ (Chart colors) */
+  --chart-1: 220 76% 51%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 38 92% 50%;
+  --chart-4: 4 90% 58%;
+  --chart-5: 340 82% 52%;
+}
+
+.dark {
+  /* ... các biến màu dark mode khác ... */
+
+  /* Thêm các biến màu cho biểu đồ (Chart colors) - Dark Mode */
+  --chart-1: 210 70% 60%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 40 88% 55%;
+  --chart-4: 0 80% 65%;
+  --chart-5: 340 75% 60%;
+}

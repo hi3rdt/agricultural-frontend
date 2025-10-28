@@ -11,49 +11,73 @@ interface ChartData {
   soilMoisture: number
 }
 
+const generateFakeData = (): ChartData[] => {
+  const fallbackData: ChartData[] = []
+  const now = new Date()
+  
+  for (let i = 11; i >= 0; i--) {
+    const time = new Date(now.getTime() - i * 60 * 60 * 1000)
+    fallbackData.push({
+      time: time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+      temperature: 20 + Math.random() * 10, 
+      humidity: 40 + Math.random() * 30,    
+      soilMoisture: 20 + Math.random() * 50, 
+    })
+  }
+  return fallbackData
+}
+
 export function SensorCharts() {
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+
   useEffect(() => {
-    const fetchHistoryData = async () => {
-      try {
-        const response = await fetch("/api/sensors/history")
-        if (!response.ok) {
-          throw new Error("Failed to fetch sensor history")
-        }
-        const result = await response.json()
-        if (result.success) {
-          setChartData(result.data)
-          setError(null)
-        }
-      } catch (err) {
-        console.error("Error fetching sensor history:", err)
-        setError("Failed to load sensor history")
-        const fallbackData: ChartData[] = []
-        const now = new Date()
-        for (let i = 23; i >= 0; i--) {
-          const time = new Date(now.getTime() - i * 60 * 60 * 1000)
-          fallbackData.push({
-            time: time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-            temperature: 22 + Math.random() * 8,
-            humidity: 50 + Math.random() * 30,
-            soilMoisture: 30 + Math.random() * 40,
-          })
-        }
-        setChartData(fallbackData)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+    
+    
+    setChartData(generateFakeData())
+    setIsLoading(false)
+    setError(null)
+  // useEffect(() => {
+   
+  //   const fetchHistoryData = async () => {
+  //     try {
+  //       const response = await fetch("/api/sensors/history")
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch sensor history")
+  //       }
+  //       const result = await response.json()
+  //       if (result.success) {
+  //         setChartData(result.data)
+  //         setError(null)
+  //       }
+  //     } catch (err) {
+  //       console.error("Error fetching sensor history:", err)
+  //       setError("Failed to load sensor history")
+  //       const fallbackData: ChartData[] = []
+  //       const now = new Date()
+  //       for (let i = 23; i >= 0; i--) {
+  //         const time = new Date(now.getTime() - i * 60 * 60 * 1000)
+  //         fallbackData.push({
+  //           time: time.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+  //           temperature: 22 + Math.random() * 8,
+  //           humidity: 50 + Math.random() * 30,
+  //           soilMoisture: 30 + Math.random() * 40,
+  //         })
+  //       }
+  //       setChartData(fallbackData)
+  //     } finally {
+  //       setIsLoading(false)
+  //     }
+  //   }
 
-    // Initial fetch
-    fetchHistoryData()
+  //   // Initial fetch
+  //   fetchHistoryData()
 
-    const interval = setInterval(fetchHistoryData, 30000)
-    return () => clearInterval(interval)
-  }, [])
+  //   const interval = setInterval(fetchHistoryData, 30000)
+  //   return () => clearInterval(interval)
+   }, [])
 
   if (isLoading) {
     return (
@@ -93,7 +117,7 @@ export function SensorCharts() {
                   stroke="hsl(var(--chart-3))"
                   strokeWidth={2}
                   name="Temperature (°C)"
-                  dot={false}
+                  
                 />
                 <Line
                   type="linear"
@@ -101,7 +125,7 @@ export function SensorCharts() {
                   stroke="hsl(var(--chart-2))"
                   strokeWidth={2}
                   name="Humidity (%)"
-                  dot={false}
+                  
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -127,7 +151,7 @@ export function SensorCharts() {
                   stroke="hsl(var(--chart-1))"
                   strokeWidth={3}
                   name="Soil Moisture (%)"
-                  dot={false}
+                  
                 />
                 {/* Threshold lines */}
                 <Line
