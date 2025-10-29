@@ -1,122 +1,83 @@
-# Agricultural Monitoring Dashboard
+# Frontend Hệ Thống Giám Sát Nông Nghiệp Thông Minh 📊
 
-A real-time agricultural monitoring system built with Next.js that displays data from DHT22 (temperature/humidity) and LM393 (soil moisture) sensors connected to an ESP32.
+Chào mừng bạn đến với frontend (giao diện người dùng) của hệ thống giám sát nông nghiệp thông minh! Dự án này được xây dựng bằng **Next.js** và **Tailwind CSS** (với **Shadcn UI**) để tạo ra một dashboard trực quan, cho phép bạn:
 
-## Features
+* Theo dõi dữ liệu cảm biến (nhiệt độ, độ ẩm không khí, độ ẩm đất) theo thời gian thực.
+* Xem lịch sử dữ liệu qua các biểu đồ tương tác.
+* Điều khiển máy bơm (chế độ tự động/thủ công) và cài đặt ngưỡng độ ẩm.
+* Xem thư viện ảnh được chụp từ ESP32-CAM và yêu cầu chụp ảnh mới.
+* Nhận các phân tích và lời khuyên tưới tiêu từ AI (Gemini).
 
-- **Real-time Sensor Monitoring**: Display temperature, humidity, and soil moisture data
-- **Historical Charts**: 24-hour trend visualization for all sensor readings
-- **Automated Irrigation**: Configurable soil moisture thresholds for pump control
-- **Manual Override**: Manual pump control when needed
-- **Clean White UI**: Professional, intuitive interface optimized for agricultural use
+Giao diện này kết nối đến [Backend API](https://github.com/hi3rdt/agricultural-backend) (FastAPI) để lấy dữ liệu và gửi lệnh điều khiển.
 
-## ESP32 Integration
+---
 
-### API Endpoints
+## ✨ Tính Năng Giao Diện
 
-Your ESP32 should send sensor data to these endpoints:
+* **Dashboard Tổng Quan:** Hiển thị các chỉ số cảm biến mới nhất, trạng thái hệ thống.
+* **Biểu Đồ Lịch Sử:** Trực quan hóa dữ liệu nhiệt độ, độ ẩm không khí và độ ẩm đất theo thời gian.
+* **Điều Khiển Máy Bơm:** Giao diện để chuyển đổi chế độ, bật/tắt bơm thủ công và đặt ngưỡng độ ẩm.
+* **Thư Viện Ảnh ESP32-CAM:** Hiển thị các ảnh đã chụp, cho phép xem, tải về, xóa và yêu cầu chụp ảnh mới.
+* **Phân Tích AI:** Hiển thị lời khuyên tưới tiêu/bón phân từ Gemini.
+* **Thiết Kế Responsive:** Hoạt động tốt trên cả máy tính và thiết bị di động.
 
-#### POST /api/sensors
-Send sensor readings from your ESP32:
+---
 
-\`\`\`json
-{
-  "temperature": 24.5,
-  "humidity": 65.2,
-  "soilMoisture": 45.8,
-  "pumpStatus": false
-}
-\`\`\`
+## 🛠️ Công Nghệ Sử Dụng
 
-#### GET /api/sensors
-Get current sensor readings
+* **Framework:** Next.js (App Router)
+* **Ngôn ngữ:** TypeScript
+* **UI:** React, Tailwind CSS, Shadcn UI
+* **Biểu đồ:** Recharts
+* **Quản lý gói:** pnpm (dựa trên lỗi `pnpm-lock.yaml` trước đó)
 
-#### GET /api/sensors/history
-Get historical data for charts
+---
 
-#### POST /api/pump
-Control pump settings:
+## 🚀 Hướng Dẫn Cài Đặt và Chạy (Local)
 
-\`\`\`json
-{
-  "action": "setThreshold",
-  "threshold": 30
-}
-\`\`\`
+### 1. Chuẩn Bị
 
-### ESP32 Code Example
+* **Node.js:** Bạn cần cài đặt Node.js (phiên bản 18.x trở lên được khuyến nghị). Node.js bao gồm `npm` (trình quản lý gói).
+    * **Tải Node.js:** Truy cập [nodejs.org](https://nodejs.org/) và tải về bộ cài đặt phù hợp với hệ điều hành của bạn (Windows, macOS, Linux). 
+    * **Kiểm tra:** Sau khi cài đặt, mở terminal (Command Prompt, PowerShell, Git Bash, etc.) và gõ `node -v` và `npm -v` để xác nhận cài đặt thành công.
+* **pnpm (Khuyến nghị):** Dự án này có vẻ sử dụng `pnpm` (dựa trên lỗi `pnpm-lock.yaml`). Cài đặt `pnpm` bằng `npm` sau khi đã cài Node.js:
+    ```bash
+    npm install -g pnpm
+    ```
+* **Git:** Cần có Git để tải code về.
 
-\`\`\`cpp
-#include <WiFi.h>
-#include <HTTPClient.h>
-#include <ArduinoJson.h>
-#include <DHT.h>
+### 2. Cài Đặt
 
-#define DHT_PIN 2
-#define DHT_TYPE DHT22
-#define SOIL_MOISTURE_PIN A0
-#define PUMP_PIN 4
+1.  **Tải code về:** Mở terminal và chạy lệnh:
+    ```bash
+    git clone [https://github.com/hi3rdt/agricultural-frontend.git](https://github.com/hi3rdt/agricultural-frontend.git)
+    cd agricultural-frontend
+    ```
 
-DHT dht(DHT_PIN, DHT_TYPE);
+2.  **Cài đặt thư viện:** Sử dụng `pnpm` để cài đặt các gói cần thiết:
+    ```bash
+    pnpm install
+    ```
+    *Lệnh này sẽ đọc file `package.json` và `pnpm-lock.yaml` để cài đúng các phiên bản thư viện.*
 
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
-const char* serverURL = "http://your-dashboard-url.com/api/sensors";
+3.  **Thiết Lập Kết Nối API Backend:**
+    * Tạo một file mới tên là **`.env.local`** trong thư mục gốc (`agricultural-frontend`).
+    * Mở file `.env.local` và thêm vào URL của backend FastAPI. **Thay thế URL bằng địa chỉ thật** (local hoặc Render).
+        ```dotenv
+        # File .env.local - Biến môi trường cho frontend
+        
+        # URL của backend FastAPI
+        # Ví dụ khi chạy local:
+        NEXT_PUBLIC_API_BASE_URL="[http://127.0.0.1:8080](http://127.0.0.1:8080)" 
+        
+        # Ví dụ khi backend deploy trên Render:
+        # NEXT_PUBLIC_API_BASE_URL="[https://agricultural-backend.onrender.com](https://agricultural-backend.onrender.com)" 
+        ```
+    * **Quan trọng:** Biến môi trường cho frontend trong Next.js phải bắt đầu bằng `NEXT_PUBLIC_` để có thể truy cập được từ phía client (trình duyệt). Code trong các component (ví dụ: `SensorCharts.tsx`) cần được sửa lại để đọc URL từ `process.env.NEXT_PUBLIC_API_BASE_URL` thay vì hardcode.
 
-void setup() {
-  Serial.begin(115200);
-  dht.begin();
-  pinMode(PUMP_PIN, OUTPUT);
-  
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
-  }
-}
+### 3. Chạy Development Server
 
-void loop() {
-  float temperature = dht.readTemperature();
-  float humidity = dht.readHumidity();
-  int soilMoistureRaw = analogRead(SOIL_MOISTURE_PIN);
-  float soilMoisture = map(soilMoistureRaw, 0, 4095, 0, 100);
-  bool pumpStatus = digitalRead(PUMP_PIN);
+Sau khi cài đặt xong, khởi động server phát triển:
 
-  // Send data to dashboard
-  HTTPClient http;
-  http.begin(serverURL);
-  http.addHeader("Content-Type", "application/json");
-
-  StaticJsonDocument<200> doc;
-  doc["temperature"] = temperature;
-  doc["humidity"] = humidity;
-  doc["soilMoisture"] = soilMoisture;
-  doc["pumpStatus"] = pumpStatus;
-
-  String jsonString;
-  serializeJson(doc, jsonString);
-
-  int httpResponseCode = http.POST(jsonString);
-  if (httpResponseCode > 0) {
-    Serial.println("Data sent successfully");
-  }
-
-  http.end();
-  delay(5000); // Send data every 5 seconds
-}
-\`\`\`
-
-## Getting Started
-
-1. Deploy this dashboard to Vercel or your preferred hosting platform
-2. Update the `serverURL` in your ESP32 code to point to your deployed dashboard
-3. Connect your DHT22 and LM393 sensors to your ESP32
-4. Upload the ESP32 code and start monitoring!
-
-## Data Flow
-
-1. ESP32 reads sensor data every 5 seconds
-2. Data is sent via HTTP POST to `/api/sensors`
-3. Dashboard updates in real-time
-4. Historical data is maintained for 24-hour charts
-5. Pump control logic runs automatically based on thresholds
+```bash
+pnpm dev
